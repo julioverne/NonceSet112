@@ -213,11 +213,11 @@ static __strong NonceSetController* NonceSetControllerCC;
 		[specifiers addObject:spec];
 		
 		spec = [PSSpecifier emptyGroupSpecifier];
-        [spec setProperty:@"\n\nCREDITS:\n\nIts based in NonceSet, async_awake-fun and stek29/unlocknvram\n\nLinks:\n\nhttps://github.com/julioverne/NonceSet\n\nhttps://github.com/ninjaprawn/async_awake-fun\n\nhttps://gist.github.com/stek29/1aabf7b576332941ae5c6f81407145a3\n\n\nTested/Developed In iPhone 5S iOS 11.2.1\n\n" forKey:@"footerText"];
+        [spec setProperty:@"\n\nCREDITS:\n\nIts based in NonceSet, async_awake-fun and stek29/unlocknvram\n\nLinks:\n\nhttps://github.com/julioverne/NonceSet\n\nhttps://github.com/ninjaprawn/async_awake-fun\n\nhttps://gist.github.com/stek29/1aabf7b576332941ae5c6f81407145a3\n\n\nTested/Developed In iPhone 5S iOS 11.1.2\n\n" forKey:@"footerText"];
         [specifiers addObject:spec];
 		
 		spec = [PSSpecifier emptyGroupSpecifier];
-        [spec setProperty:@"NonceSet112 © 2017 julioverne" forKey:@"footerText"];
+        [spec setProperty:@"NonceSet1112 © 2017 julioverne" forKey:@"footerText"];
         [specifiers addObject:spec];
 		_specifiers = [specifiers copy];
 	}
@@ -307,7 +307,7 @@ static __strong NonceSetController* NonceSetControllerCC;
 - (void) loadView
 {
 	[super loadView];
-	self.title = @"NonceSet112";
+	self.title = @"NonceSet1112";
 	static __strong UIRefreshControl *refreshControl;
 	if(!refreshControl) {
 		refreshControl = [[UIRefreshControl alloc] init];
