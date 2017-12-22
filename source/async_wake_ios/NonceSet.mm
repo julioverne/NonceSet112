@@ -67,7 +67,7 @@ bool set_generator(const char *gen)
             textLog("Failed to get IODTNVRAM service.");
         } else {
 			kern_return_t kret = IORegistryEntrySetCFProperties(nvram, dict);
-			textLog([NSString stringWithFormat:@"IORegistryEntrySetCFProperties: %s.", mach_error_string(kret)].UTF8String);
+			textLog("IORegistryEntrySetCFProperties: %s.", mach_error_string(kret));
 			if(kret == KERN_SUCCESS) {
 				ret = true;
 				textLog("Generator Set.");
@@ -327,32 +327,26 @@ static __strong NonceSetController* NonceSetControllerCC;
 	[textview setScrollEnabled:YES];
 	[textview setBackgroundColor:[UIColor clearColor]];
 	textview.autoresizingMask = (UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth);
-	textLog("\n\n\n\n");
-	textLog("Getting root...");
 	
-	[NSTimer scheduledTimerWithTimeInterval:0.3f 
-                  target:self 
-                  selector:@selector(updateSysLog) 
-                  userInfo:nil 
-                  repeats:YES];
+	[NSTimer scheduledTimerWithTimeInterval:0.3f target:self selector:@selector(updateSysLog) userInfo:nil repeats:YES];
 }
 
 - (void)updateSysLog
 {
 	static int oldLen;
-	if(oldLen==logText.length) {
-		return;
+	@autoreleasepool {
+		if(oldLen==logText.length) {
+			return;
+		}
+		oldLen = textview.text.length;
+		[textview setText:logText];
+		[textview scrollRangeToVisible:NSMakeRange(oldLen -1, 1)];
 	}
-	[textview setText:logText];
-	oldLen = textview.text.length;
-	[textview scrollRangeToVisible:NSMakeRange(oldLen -1, 1)];
 }
 
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
-	
-	
 	[self getRoot];
 }
 
@@ -393,13 +387,16 @@ static __strong NonceSetController* NonceSetControllerCC;
 
 - (void)getRoot
 {
+	textLog("Getting root...");
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 		mach_port_t user_client;
 		mach_port_t tfp0 = get_tfp0(&user_client);
 		let_the_fun_begin(tfp0, user_client);
 		textLog("Getting root... Done.");
 		textLog("Current Generator: %s", [self getGenerator].UTF8String);
-		[self reloadSpecifiers];
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[self reloadSpecifiers];
+		});
 	});
 }
 
@@ -409,8 +406,7 @@ static __strong NonceSetController* NonceSetControllerCC;
 	if(getuid()) {
 		return bootNonce;
 	}
-    CFMutableDictionaryRef bdict = IOServiceMatching("IODTNVRAM");
-    io_service_t nvservice = IOServiceGetMatchingService(kIOMasterPortDefault, bdict);
+    io_service_t nvservice = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IODTNVRAM"));
     if(MACH_PORT_VALID(nvservice)) {
         io_string_t buffer;
         unsigned int len = 256;
@@ -418,7 +414,7 @@ static __strong NonceSetController* NonceSetControllerCC;
         if(kret == KERN_SUCCESS) {
             bootNonce = [NSString stringWithFormat:@"%s", (char *) buffer];
         } else {
-            textLog("Reading com.apple.System.boot-nonce failed.");
+            textLog("Reading com.apple.System.boot-nonce failed: %s", mach_error_string(kret));
         }
     } else {
         textLog("Failed to get IODTNVRAM.");

@@ -569,7 +569,7 @@ mach_port_t get_kernel_memory_rw() {
     // we want the GC to actually finish, so go slow...
     pthread_yield_np();
     usleep(10000);
-    textLog("%d\n", i);
+    //textLog("%d\n", i);
   }
   
 
