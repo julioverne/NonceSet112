@@ -190,6 +190,10 @@ void offsets_init() {
     textLog("this is iPod Touch 6G, should work!\n");
     symbols = ksymbols_ipod_touch_6g_15b202;
     have_syms = 1;
+  } else if (strstr(u.machine, "iPhone7,2") || strstr(u.machine, "iPhone7,1")) {
+      printf("this is iPhone 6/6+, should work!\n");
+      symbols = ksymbols_ipod_touch_6g_15b202;
+      have_syms = 1;
   } else if (strstr(u.machine, "iPhone9,3")) {
     textLog("this is iPhone 7, should work!\n");
     symbols = ksymbols_iphone_7_15B202;
