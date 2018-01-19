@@ -423,7 +423,7 @@ do { \
 		rkbuffer(vtable_start, buf, vtable_len);
 		
 		// alter it
-		buf[getOFVariablePerm/4] = buf[searchNVRAMProperty/4];
+		buf[getOFVariablePerm/sizeof(uint64_t)] = buf[searchNVRAMProperty/sizeof(uint64_t)];
 		
 		// allocate buffer in kernel and copy it back
 		uint64_t fake_vtable = kmem_alloc_wired(vtable_len);
